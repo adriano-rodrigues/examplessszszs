@@ -1,0 +1,208 @@
+# First Tech Wallet Sample code
+# Prerequisites
+- The client is onboarded as a Token Requester
+- The client has access to the Visa Developer Center to obtain the correct API credentials (the API Key and the Shared Secret Key)
+# Introduction
+The APIs in this guide are to be used by the clients (Mobile Wallet Providers) of the Visa Token Service. This API provides a set of methods which enables PAN tokenization. Given a PAN, it can return a token and use it for e-commerce and m-commerce payments. Tokens can be restricted by domain, channel, device, usage, amount, etc. criteria. There are a set of APIs, known as Enrollment, Provisioning, Active Account Management (AAM) APIs, which provide a way to replenish a set of dynamic parameters on the token thus increasing payments security. 
+
+### Tech
+
+First Tech uses a number of open source projects to work properly:
+
+* Java 11
+* Spring boot
+* Lombok
+* Maven
+
+### Environment Variables
+In order to application to run properly, we need to set these Environment Variables below:
+ENCRYPTION_API_KEY=5YFH38XXVR170HSRUV2E13UaeRODPFkiD1_SFClGcKUepBnQU
+ENCRYPTION_SHARED_SECRET=SIOxH}dh#79{4aRmOa/1idLK25ULdip0w$q-r/Ar
+
+### Installation
+
+Install the dependencies and dev Dependencies and start the sample code.
+
+```sh
+$ cd <project_directory>/vts-wallet-service
+$ mvn clean install
+$ mvn spring-boot:run
+```
+
+To run from jar file...
+
+```sh
+$ cd <project_directory>/vts-wallet-service
+$ mvn clean install
+$ cd <project_directory>/vts-wallet-service/target
+$ java -jar vts-wallet-service-0.0.1-SNAPSHOT.jar
+```
+
+
+### Swagger
+
+You can use below URI to launch swagger and test the Wallet APIs
+
+http://<server:port>/ftwalletservice/swagger-ui.html
+
+#### API Doc
+
+http://<server:port>/ftwalletservice/v2/api-docs
+
+### Request example:
+Endpoint: 
+
+PUT http://localhost:8080/ftwalletservice/deviceEnrollment
+
+Payload:
+
+{
+"apiKey": "D740AEMAPUJOUQCEOR8O21qji0tMVF7qteDkuiea-Mad882is",
+"enrollDevice": {
+"deviceInfo": {
+"osType": "ANDROID",
+"osVersion": "4.4.4",
+"osBuildID": "KTU84M",
+"deviceType": "PHONE",
+"deviceIDType": "TEE",
+"deviceManufacturer": "Samsung",
+"deviceBrand": "Android Brand",
+"deviceModel": "ANDROID-999",
+"deviceName": "MyWatch",
+"hostDeviceID": "3e89278f175403c4fc4e0621",
+"phoneNumber": "7862011714"
+},
+"channelSecurityContext": {
+"vtsCerts": [
+{
+"vCertificateID": "27ffe2c7",
+"certUsage": "CONFIDENTIALITY"
+},
+{
+"vCertificateID": "715ea257",
+"certUsage": "INTEGRITY"
+}
+],
+"channelInfo": {
+"encryptionScheme": "RSA_PKI"
+},
+"deviceCerts": [
+{
+"certUsage": "CONFIDENTIALITY",
+"certFormat": "X509",
+"certValue": "YourownconfidentialityCert"
+},
+{
+"certUsage": "INTEGRITY",
+"certFormat": "X509",
+"certValue": "YourownintegrityCert"
+}
+]
+}
+},
+"sharedSecret": "nY8rzX-9Sq09WCUq23-JXqNdyhLWXxPA@LvFulK@",
+"vclientId": "ddf54e2c-6b6f-bfd8-6645-17d241fc9a01"
+}
+
+### Request example:
+Endpoint:
+
+POST http://localhost:8080/ftwalletservice/panEnrollment
+
+Payload Card1:
+{
+"apiKey": "D740AEMAPUJOUQCEOR8O21qji0tMVF7qteDkuiea-Mad882is",
+"enrollPan": {
+"channelSecurityContext": {
+"channelInfo": {
+"encryptionScheme": "RSA_PKI"
+},
+"deviceCerts":[
+{
+"certFormat":"X509",
+"certUsage":"CONFIDENTIALITY",
+"certValue":"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUQzVENDQXNVQ0ZESjY3TEdzeU5SMzJRTWNwcVF2RFM1MUNnZ1dNQTBHQ1NxR1NJYjNEUUVCQ3dVQU1JR2wKTVFzd0NRWURWUVFHRXdKQ1VqRVNNQkFHQTFVRUNBd0pVMkZ2SUZCaGRXeHZNUkl3RUFZRFZRUUhEQWxUWVc4ZwpVR0YxYkc4eEV6QVJCZ05WQkFvTUNrWnBjbk4wSUZSbFkyZ3hFVEFQQmdOVkJBc01DRlpwYzJFZ1ZsUlRNUmt3CkZ3WURWUVFEREJBcUxtWnBjbk4wTFhSbFkyZ3VibVYwTVNzd0tRWUpLb1pJaHZjTkFRa0JGaHhxYjJGdkxtOXMKYVhabGFYSmhRR1pwY25OMExYUmxZMmd1Ym1WME1CNFhEVEl4TURrd09ERXpORGd3TWxvWERUSXpNREV5TVRFegpORGd3TWxvd2dhOHhDekFKQmdOVkJBWVRBa0pTTVJJd0VBWURWUVFJREFsVFlXOGdVR0YxYkc4eEV6QVJCZ05WCkJBY01DbE5oYnlCRFlYSnNiM014SnpBbEJnTlZCQW9NSGsxdmJtbDBiM0poSUZOdmJIVmpiMlZ6SUZSbFkyNXYKYkc5bmFXTmhjekVaTUJjR0ExVUVDd3dRUkdsbmFYUmhiQ0JUWlhKMmFXTmxjekVWTUJNR0ExVUVBd3dNVFc5aQphV3hsUkdWMmFXTmxNUnd3R2dZSktvWklodmNOQVFrQkZnMWxiV0ZwYkVCdmNtY3VZMjl0TUlJQklqQU5CZ2txCmhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBdDhoVVN1TUVLNm1zQXdQN2N6dE93a2NKTmVpeVdkWVgKWnRJL2F2WDM4dk0vSjlwUGg3TGw4Vi9LVFQ1QkphNTA4YjBtc0x5UnlLQkVuYTYrRmFLZEl2QVRmYjBOaHFaeApycGRGUDRZcElNRnhTbnZPWnhIVzJMNmV4WjdObFFsc1E5dGc5SUJhNUUrTEgrdS9ueFZEbGZoMjBNMEc0emJICjNvSlltNmtYbTcxcUluNjMzcjIwazZzbFZGM3ZBOFVVTk43Z3ArRVFDSW5SemdqNG42UzNqME1yZEFlOVAxZWYKcnBMa1FFenBvaG5LN05yWHQ5alc0T2k0cFZvYkRzd2djSjdyaXQwNnRFQUdNL0djako0K0s1V3l0aVFNSnlobApRZWlOemk5QzZiUXJqQzdYNEk1a29QMXFqTUFnUjlJaDllNW5wMHkwVk1SYUJmMVlncXNjSlFJREFRQUJNQTBHCkNTcUdTSWIzRFFFQkN3VUFBNElCQVFDbUU2VnJFL281b1F0YWRxeU11SktwaWFjNFZ6L1VSSTdrRERQUW1wbDAKb2lpQmhybVl6Tk1vQ2FvaHMzSDQ4ai9DMktkU2hLbFg4R3hDWDdrN2VhVUVDZjdkanM2blRlZ2d0WnNoS0c1NQpjR0hGU0FaMnA4elNTWEN4MXpWWm5aZDZBbk1mQ05kRWNtTmowYXZHZHdTRTBDQldvMWl3UkpadlpOdWJPUG9QCk0zVGsyR3JDcGV4S3ZwWUhTWTRTcSs4QkgyY1F5cjFING95Qm5pRXd4VWJMVXJlS04yWFBUcEt1UXNtcGJVRUkKVnNkZ3JnUGg0bTEycDk3WmJoQ3N0aWR1WCtERHB6QnFGdlpnWUF1QVlRbVRrbVNvMnI5WjE2V2ZIRUplZ3JCNQp2MjMyRW5pRUo2SzJNL25zV0M4eWRHV3hXc0tBSndUb1RPT1JWQ1VtRWNzZwotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg"
+},
+{
+"certFormat":"X509",
+"certUsage":"INTEGRITY",
+"certValue":"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUQzVENDQXNVQ0ZESjY3TEdzeU5SMzJRTWNwcVF2RFM1MUNnZ1hNQTBHQ1NxR1NJYjNEUUVCQ3dVQU1JR2wKTVFzd0NRWURWUVFHRXdKQ1VqRVNNQkFHQTFVRUNBd0pVMkZ2SUZCaGRXeHZNUkl3RUFZRFZRUUhEQWxUWVc4ZwpVR0YxYkc4eEV6QVJCZ05WQkFvTUNrWnBjbk4wSUZSbFkyZ3hFVEFQQmdOVkJBc01DRlpwYzJFZ1ZsUlRNUmt3CkZ3WURWUVFEREJBcUxtWnBjbk4wTFhSbFkyZ3VibVYwTVNzd0tRWUpLb1pJaHZjTkFRa0JGaHhxYjJGdkxtOXMKYVhabGFYSmhRR1pwY25OMExYUmxZMmd1Ym1WME1CNFhEVEl4TURrd09ERXpOVEF4T1ZvWERUSXpNREV5TVRFegpOVEF4T1Zvd2dhOHhDekFKQmdOVkJBWVRBa0pTTVJJd0VBWURWUVFJREFsVFlXOGdVR0YxYkc4eEV6QVJCZ05WCkJBY01DbE5oYnlCRFlYSnNiM014SnpBbEJnTlZCQW9NSGsxdmJtbDBiM0poSUZOdmJIVmpiMlZ6SUZSbFkyNXYKYkc5bmFXTmhjekVaTUJjR0ExVUVDd3dRUkdsbmFYUmhiQ0JUWlhKMmFXTmxjekVWTUJNR0ExVUVBd3dNVFc5aQphV3hsUkdWMmFXTmxNUnd3R2dZSktvWklodmNOQVFrQkZnMWxiV0ZwYkVCdmNtY3VZMjl0TUlJQklqQU5CZ2txCmhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBeGc2U0hzVnJYaHVoS0dTRk5ONHhZYWREWHhQWHdUSjYKNE02TlZma2xEOVh0bE5hZmQrV25iK0ZndHNQSGljYXVKZVA0cXRqQmNEZmkvRGQrRU9pSk1PT21ham5PTzNGOAowOEtWZ2hFM0lhekU5Mnp6OGplWmVqcVlEanMxZVJhclIvdmJhL1hKbFdXOGhBVkQ2dzYwSHppcm9YRStFZ3EwCkFDRS9DTE8xbUQycXhaak42dUlwR0dwNWsxK2Y5SlpjdE4wSkE0MEI5WFR4VEplb05DdGNVOWZpQ0ZWZXR0KzcKdVVrSndYMFB6MFRQK0FSbWVITDhFNTZvRlJRUEhBZ2Mva0JkWWt0ZkpWSzdTWnFvZ1NXdlM1TFhWc0kvUmoxYQpNaWJmbnFvWGkzWjhDeXlSdDRSSjZQdFRNcThVa1JLbXZYSXpQRTUzaW9RREVVUWhXZWc5alFJREFRQUJNQTBHCkNTcUdTSWIzRFFFQkN3VUFBNElCQVFDUEZuMXdTTlp5UTRJeGljSEEvb1VMUTlYUmlPc1c1bXNGQ0lwaThTMnEKZ3VFVWhsZm9nTXQyYnMzdDk2VCs1ZU8wNHhFSG0rMm5qcVd0MGN2N3NvVUM4em82eHVFZitzdzNVdjI2eExhbwp1cXFWOVhuYlhCM1hvdFRPcXJJdDNpa1FjR1pVQi8rRkhsTDVJUVc2bGk1alNTQjhyUlI3T0tuN0lUNG5sLzVTCnl1RmtpQnF5TEp2cWRwTFphS3F1UkNKbUV2WkVQWHIyNmZIdnp2ZVNKbmJIc1NTY0VOeGlXRUU2SkNXL3JRUmoKYnFsWm5aKzhVOFhuVXFOS1BpSjNBeFJ1bkdPRWk5c1ROK01MT1c0NTdBSnhkRjVmMWN4a0NXL21MRFozQmloRwpPWlM0UTlVTTF6L0l3R2I1c1NPandHNUNSUjNjTW1WVmc1Vm1tU29TT2FrcQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg"
+}
+],
+"vtsCerts": [
+{
+"certUsage":"CONFIDENTIALITY",
+"vCertificateID":"27ffe2c7"
+},
+{
+"certUsage":"INTEGRITY",
+"vCertificateID":"715ea257"
+}
+]
+},
+"clientAppID": "firstTech",
+"clientDeviceID": 8450744268195285591,
+"clientWalletAccountID": "AiOxOitsfavni990I6",
+"locale": "en_US",
+"panSource": "MANUALLYENTERED",
+"consumerEntryMode": "KEYENTERED",
+"paymentInstrument": {
+"accountNumber": "4622943127025824",
+"cvv2": "651",
+"expirationDate": {
+"month": "12",
+"year": "2022"
+}
+}
+},
+"sharedSecret": "nY8rzX-9Sq09WCUq23-JXqNdyhLWXxPA@LvFulK@"
+}
+
+Payload Card2:
+{
+"apiKey": "D740AEMAPUJOUQCEOR8O21qji0tMVF7qteDkuiea-Mad882is",
+"enrollPan": {
+"channelSecurityContext": {
+"channelInfo": {
+"encryptionScheme": "RSA_PKI"
+},
+"deviceCerts":[
+{
+"certFormat":"X509",
+"certUsage":"CONFIDENTIALITY",
+"certValue":"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUQzVENDQXNVQ0ZESjY3TEdzeU5SMzJRTWNwcVF2RFM1MUNnZ1dNQTBHQ1NxR1NJYjNEUUVCQ3dVQU1JR2wKTVFzd0NRWURWUVFHRXdKQ1VqRVNNQkFHQTFVRUNBd0pVMkZ2SUZCaGRXeHZNUkl3RUFZRFZRUUhEQWxUWVc4ZwpVR0YxYkc4eEV6QVJCZ05WQkFvTUNrWnBjbk4wSUZSbFkyZ3hFVEFQQmdOVkJBc01DRlpwYzJFZ1ZsUlRNUmt3CkZ3WURWUVFEREJBcUxtWnBjbk4wTFhSbFkyZ3VibVYwTVNzd0tRWUpLb1pJaHZjTkFRa0JGaHhxYjJGdkxtOXMKYVhabGFYSmhRR1pwY25OMExYUmxZMmd1Ym1WME1CNFhEVEl4TURrd09ERXpORGd3TWxvWERUSXpNREV5TVRFegpORGd3TWxvd2dhOHhDekFKQmdOVkJBWVRBa0pTTVJJd0VBWURWUVFJREFsVFlXOGdVR0YxYkc4eEV6QVJCZ05WCkJBY01DbE5oYnlCRFlYSnNiM014SnpBbEJnTlZCQW9NSGsxdmJtbDBiM0poSUZOdmJIVmpiMlZ6SUZSbFkyNXYKYkc5bmFXTmhjekVaTUJjR0ExVUVDd3dRUkdsbmFYUmhiQ0JUWlhKMmFXTmxjekVWTUJNR0ExVUVBd3dNVFc5aQphV3hsUkdWMmFXTmxNUnd3R2dZSktvWklodmNOQVFrQkZnMWxiV0ZwYkVCdmNtY3VZMjl0TUlJQklqQU5CZ2txCmhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBdDhoVVN1TUVLNm1zQXdQN2N6dE93a2NKTmVpeVdkWVgKWnRJL2F2WDM4dk0vSjlwUGg3TGw4Vi9LVFQ1QkphNTA4YjBtc0x5UnlLQkVuYTYrRmFLZEl2QVRmYjBOaHFaeApycGRGUDRZcElNRnhTbnZPWnhIVzJMNmV4WjdObFFsc1E5dGc5SUJhNUUrTEgrdS9ueFZEbGZoMjBNMEc0emJICjNvSlltNmtYbTcxcUluNjMzcjIwazZzbFZGM3ZBOFVVTk43Z3ArRVFDSW5SemdqNG42UzNqME1yZEFlOVAxZWYKcnBMa1FFenBvaG5LN05yWHQ5alc0T2k0cFZvYkRzd2djSjdyaXQwNnRFQUdNL0djako0K0s1V3l0aVFNSnlobApRZWlOemk5QzZiUXJqQzdYNEk1a29QMXFqTUFnUjlJaDllNW5wMHkwVk1SYUJmMVlncXNjSlFJREFRQUJNQTBHCkNTcUdTSWIzRFFFQkN3VUFBNElCQVFDbUU2VnJFL281b1F0YWRxeU11SktwaWFjNFZ6L1VSSTdrRERQUW1wbDAKb2lpQmhybVl6Tk1vQ2FvaHMzSDQ4ai9DMktkU2hLbFg4R3hDWDdrN2VhVUVDZjdkanM2blRlZ2d0WnNoS0c1NQpjR0hGU0FaMnA4elNTWEN4MXpWWm5aZDZBbk1mQ05kRWNtTmowYXZHZHdTRTBDQldvMWl3UkpadlpOdWJPUG9QCk0zVGsyR3JDcGV4S3ZwWUhTWTRTcSs4QkgyY1F5cjFING95Qm5pRXd4VWJMVXJlS04yWFBUcEt1UXNtcGJVRUkKVnNkZ3JnUGg0bTEycDk3WmJoQ3N0aWR1WCtERHB6QnFGdlpnWUF1QVlRbVRrbVNvMnI5WjE2V2ZIRUplZ3JCNQp2MjMyRW5pRUo2SzJNL25zV0M4eWRHV3hXc0tBSndUb1RPT1JWQ1VtRWNzZwotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg"
+},
+{
+"certFormat":"X509",
+"certUsage":"INTEGRITY",
+"certValue":"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUQzVENDQXNVQ0ZESjY3TEdzeU5SMzJRTWNwcVF2RFM1MUNnZ1hNQTBHQ1NxR1NJYjNEUUVCQ3dVQU1JR2wKTVFzd0NRWURWUVFHRXdKQ1VqRVNNQkFHQTFVRUNBd0pVMkZ2SUZCaGRXeHZNUkl3RUFZRFZRUUhEQWxUWVc4ZwpVR0YxYkc4eEV6QVJCZ05WQkFvTUNrWnBjbk4wSUZSbFkyZ3hFVEFQQmdOVkJBc01DRlpwYzJFZ1ZsUlRNUmt3CkZ3WURWUVFEREJBcUxtWnBjbk4wTFhSbFkyZ3VibVYwTVNzd0tRWUpLb1pJaHZjTkFRa0JGaHhxYjJGdkxtOXMKYVhabGFYSmhRR1pwY25OMExYUmxZMmd1Ym1WME1CNFhEVEl4TURrd09ERXpOVEF4T1ZvWERUSXpNREV5TVRFegpOVEF4T1Zvd2dhOHhDekFKQmdOVkJBWVRBa0pTTVJJd0VBWURWUVFJREFsVFlXOGdVR0YxYkc4eEV6QVJCZ05WCkJBY01DbE5oYnlCRFlYSnNiM014SnpBbEJnTlZCQW9NSGsxdmJtbDBiM0poSUZOdmJIVmpiMlZ6SUZSbFkyNXYKYkc5bmFXTmhjekVaTUJjR0ExVUVDd3dRUkdsbmFYUmhiQ0JUWlhKMmFXTmxjekVWTUJNR0ExVUVBd3dNVFc5aQphV3hsUkdWMmFXTmxNUnd3R2dZSktvWklodmNOQVFrQkZnMWxiV0ZwYkVCdmNtY3VZMjl0TUlJQklqQU5CZ2txCmhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBeGc2U0hzVnJYaHVoS0dTRk5ONHhZYWREWHhQWHdUSjYKNE02TlZma2xEOVh0bE5hZmQrV25iK0ZndHNQSGljYXVKZVA0cXRqQmNEZmkvRGQrRU9pSk1PT21ham5PTzNGOAowOEtWZ2hFM0lhekU5Mnp6OGplWmVqcVlEanMxZVJhclIvdmJhL1hKbFdXOGhBVkQ2dzYwSHppcm9YRStFZ3EwCkFDRS9DTE8xbUQycXhaak42dUlwR0dwNWsxK2Y5SlpjdE4wSkE0MEI5WFR4VEplb05DdGNVOWZpQ0ZWZXR0KzcKdVVrSndYMFB6MFRQK0FSbWVITDhFNTZvRlJRUEhBZ2Mva0JkWWt0ZkpWSzdTWnFvZ1NXdlM1TFhWc0kvUmoxYQpNaWJmbnFvWGkzWjhDeXlSdDRSSjZQdFRNcThVa1JLbXZYSXpQRTUzaW9RREVVUWhXZWc5alFJREFRQUJNQTBHCkNTcUdTSWIzRFFFQkN3VUFBNElCQVFDUEZuMXdTTlp5UTRJeGljSEEvb1VMUTlYUmlPc1c1bXNGQ0lwaThTMnEKZ3VFVWhsZm9nTXQyYnMzdDk2VCs1ZU8wNHhFSG0rMm5qcVd0MGN2N3NvVUM4em82eHVFZitzdzNVdjI2eExhbwp1cXFWOVhuYlhCM1hvdFRPcXJJdDNpa1FjR1pVQi8rRkhsTDVJUVc2bGk1alNTQjhyUlI3T0tuN0lUNG5sLzVTCnl1RmtpQnF5TEp2cWRwTFphS3F1UkNKbUV2WkVQWHIyNmZIdnp2ZVNKbmJIc1NTY0VOeGlXRUU2SkNXL3JRUmoKYnFsWm5aKzhVOFhuVXFOS1BpSjNBeFJ1bkdPRWk5c1ROK01MT1c0NTdBSnhkRjVmMWN4a0NXL21MRFozQmloRwpPWlM0UTlVTTF6L0l3R2I1c1NPandHNUNSUjNjTW1WVmc1Vm1tU29TT2FrcQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg"
+}
+],
+"vtsCerts": [
+{
+"certUsage":"CONFIDENTIALITY",
+"vCertificateID":"27ffe2c7"
+},
+{
+"certUsage":"INTEGRITY",
+"vCertificateID":"715ea257"
+}
+]
+},
+"clientAppID": "firstTech",
+"clientDeviceID": 8450744268195285591,
+"clientWalletAccountID": "AiOxOitsfavni990I6",
+"locale": "en_US",
+"panSource": "MANUALLYENTERED",
+"consumerEntryMode": "KEYENTERED",
+"paymentInstrument": {
+"accountNumber": "4622943127025832",
+"cvv2": "369",
+"expirationDate": {
+"month": "12",
+"year": "2022"
+}
+}
+},
+"sharedSecret": "nY8rzX-9Sq09WCUq23-JXqNdyhLWXxPA@LvFulK@"
+}
